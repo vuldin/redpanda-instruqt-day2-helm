@@ -1,0 +1,27 @@
+slug: day2-helm
+id: 7sker6motqjc
+title: Day 2 operations with Redpanda helm chart
+teaser: Learn how to manage Redpanda after deploying with the Redpanda helm chart
+description: |-
+  Redpanda is a Kafka-compatible streaming data platform that is less complex and less costly than any other commercial mission-critical event streaming platform. It's fast, it's easy, and it keeps your data safe.
+
+  The Redpanda helm chart allows you to deploy Redpanda into Kubernetes. In this tutorial, you learn how to manage Redpanda when deployed in Kubernetes with the helm chart.
+icon: https://res.cloudinary.com/practicaldev/image/fetch/s--W2NpA-Jj--/c_fill,f_auto,fl_progressive,h_320,q_auto,w_320/https://dev-to-uploads.s3.amazonaws.com/uploads/organization/profile_image/5327/ea54f4c7-abf0-46fc-a971-766b484ab9bd.png
+tags:
+- day2ops
+- helm
+- k8s
+owner: redpanda
+developers:
+- josh@redpanda.com
+show_timer: true
+timelimit: 10200
+lab_config:
+  extend_ttl: 300
+  feedback_recap_enabled: true
+  loadingMessages: true
+  hideStopButton: false
+  default_layout: AssignmentRight
+  default_layout_sidebar_size: 33
+checksum: "14258644753744741774"
+enhanced_loading: false
