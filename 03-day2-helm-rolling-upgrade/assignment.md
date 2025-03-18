@@ -1,6 +1,6 @@
 ---
-slug: day2-operator-rolling-upgrade
-id: 0bnmqvvbvj7y
+slug: day2-helm-rolling-upgrade
+id: 9x84mbenxfwl
 type: challenge
 title: Rolling upgrade
 teaser: This section shows how to perform a rolling upgrade, and lists a few things
@@ -12,7 +12,7 @@ notes:
 
     ![skate.png](../assets/skate.png)
 tabs:
-- id: 9l5gajduyqvj
+- id: k5ejpbuyxukf
   title: Shell
   type: terminal
   hostname: server

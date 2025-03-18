@@ -1,6 +1,6 @@
 ---
-slug: day2-operator-monitoring-alerting
-id: lqy4kbkiktzm
+slug: day2-helm-monitoring-alerting
+id: x3rynlflyrac
 type: challenge
 title: Monitoring and Alerting
 teaser: Validate Prometheus connectivity to the Redpanda cluster, ensuring it's properly
@@ -21,28 +21,28 @@ notes:
     - Owl Shop, an e-commerce simulation
     Click Start once you see that this process has completed .
 tabs:
-- id: xgjykhxijhly
+- id: wiodjyu4doat
   title: Terminal
   type: terminal
   hostname: docker
   workdir: /root/instruqt-public-day2ops/03-monitoring-and-alert
-- id: t7rk6o275w28
+- id: kduiqztzhb0c
   title: Prometheus
   type: service
   hostname: docker
   port: 9090
-- id: alr6jqv5xfm2
+- id: yqtqdntodr2u
   title: Inbox
   type: service
   hostname: docker
   port: 8025
-- id: ywkyt25zsxd9
+- id: bnn6cbgi17pd
   title: Grafana
   type: service
   hostname: docker
   path: /alerting/list
   port: 3000
-- id: v1zhgt4poi3j
+- id: rgldj5qurdth
   title: Grafana Notification
   type: service
   hostname: docker

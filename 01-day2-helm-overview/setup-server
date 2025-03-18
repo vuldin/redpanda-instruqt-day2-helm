@@ -27,18 +27,16 @@ kubectl taint node worker7 redpanda-pool2=true:NoSchedule
 kubectl label node worker7 nodetype=redpanda-pool2
 
 # deploy redpanda
-#curl -sLO https://gist.githubusercontent.com/vuldin/31ab8a3fb0a1cd7f871fd846991fb6d0/raw/4f2d72173976d3e05cbb991211e949b1da63d5e2/operator-config.yaml
-#kubectl -n redpanda apply -f operator-config.yaml
-#kubectl -n redpanda wait --for condition=established --timeout=60s crd/redpandas.cluster.redpanda.com
-
-exit 0
+curl -sLO https://gist.githubusercontent.com/vuldin/2000e53b22b7d0ef0c7ae69f70e581dc/raw/ffe9a14265087f32c802e03085525dbc82491dc4/values.yaml
+helm upgrade --install redpanda redpanda --repo https://charts.redpanda.com -n redpanda --wait --timeout 2h --create-namespace --version 5.7.36 -f values.yaml
+kubectl -n redpanda rollout status statefulset redpanda --watch
 
 # create rpk profile
 kubectl get secret -n redpanda tls-external -o go-template='{{ index .data "ca.crt" | base64decode }}' > ca.crt
 while ! kubectl get svc/lb-redpanda-0 -n redpanda -o yaml | yq '.status.loadBalancer.ingress[].ip' | grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}"; do sleep 1; done
 while ! kubectl get svc/lb-redpanda-1 -n redpanda -o yaml | yq '.status.loadBalancer.ingress[].ip' | grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}"; do sleep 1; done
 while ! kubectl get svc/lb-redpanda-2 -n redpanda -o yaml | yq '.status.loadBalancer.ingress[].ip' | grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}"; do sleep 1; done
-rpk profile create --from-profile <(kubectl get configmap -n redpanda redpanda-rpk -o go-template='{{ .data.profile }}') operator
+rpk profile create --from-profile <(kubectl get configmap -n redpanda redpanda-rpk -o go-template='{{ .data.profile }}') redpanda-helm
 rpk profile set kafka_api.sasl.user=username kafka_api.sasl.password=password kafka_api.sasl.mechanism=SCRAM-SHA-256
 echo `kubectl get svc/lb-redpanda-0 -n redpanda -o yaml | yq '.status.loadBalancer.ingress[].ip'` redpanda-0.testdomain.local | sudo tee -a /etc/hosts
 echo `kubectl get svc/lb-redpanda-1 -n redpanda -o yaml | yq '.status.loadBalancer.ingress[].ip'` redpanda-1.testdomain.local | sudo tee -a /etc/hosts

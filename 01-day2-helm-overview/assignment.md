@@ -1,6 +1,6 @@
 ---
-slug: day2-operator-overview
-id: vbe5vp2h1g8s
+slug: day2-helm-overview
+id: pcpeqkkdykqf
 type: challenge
 title: Overview
 teaser: This section provides an overview of the initial state of the cluster and
@@ -11,29 +11,29 @@ notes:
   contents: |-
     This track uses a multi-node Kubernetes cluster provided by k3s. There are 8 VMs total (providing 7 worker nodes and one control plane).
 
-    You will walk through the configuration for Kubernetes, the Operator, Redpanda, networking, and the various tools to interact with this environment.
+    You will walk through the configuration for Kubernetes, the helm chart, Redpanda, networking, and the various tools to interact with this environment.
 
     Please wait while the VMs are deployed and the Redpanda cluster is started and configured (this takes ~8 minutes without hot start environments).
 
     ![skate.png](../assets/skate.png)
 tabs:
-- id: endesrqhzs26
+- id: rbglejux6luq
   title: Shell
   type: terminal
   hostname: server
-- id: s3lvuzo38s82
+- id: a2gx7emyobtp
   title: Prometheus
   type: service
   hostname: server
   path: /
   port: 9090
-- id: jtzoxibj06ju
+- id: osc4ot7xaxrn
   title: Grafana
   type: service
   hostname: server
   path: /
   port: 3000
-- id: dirqfiicjt00
+- id: ljuywzl3l3t1
   title: Producer
   type: terminal
   hostname: server
@@ -139,35 +139,28 @@ Output:
 
 The operator is responsible for deploying and configuring Redpanda. In production, the operator configuration will likely be checked into git and referenced within a CI/CD pipeline that provides infrastructure as code (IaC).
 
-Check the operator status:
+Check the Statefulset status:
 
 ```bash,run
-kubectl get redpanda -n redpanda
+kubectl --namespace redpanda rollout status statefulset redpanda --watch
 ```
 
 Output:
 
 ```bash,nocopy
-NAME       READY   STATUS
-redpanda   True    Redpanda reconciliation succeeded
+statefulset rolling update complete 3 pods at revision redpanda-7d97f89b88...
 ```
 
 ## Helm
 
-Two different helm charts are used when deploying Redpanda with the operator:
-
-1. The operator chart deploys the operator (this is also called the `redpanda-controller` chart)
-2. The operator uses the Redpanda chart internally to handle some tasks related to managing Redpanda. See [this link](https://docs.redpanda.com/current/deploy/deployment-option/self-hosted/kubernetes/k-deployment-overview/#helm-and-redpanda-operator) for more details on how the operator makes use of the helm chart.
-
-It is important to pin the versions of both charts (along with Redpanda itself) in order to ensure compatibility between these components over time. Below are the locations where each of these components are pinned in code:
+It is important to pin the versions of both the chart and Redpanda in order to ensure compatibility between these components over time. Below are the locations where each of these components are pinned in code:
 
 | Component name | link |
 | - | - |
 | Redpanda | [link](https://gist.github.com/vuldin/31ab8a3fb0a1cd7f871fd846991fb6d0#file-operator-config-yaml-L10) |
-| Operator chart | [link](https://github.com/vuldin/redpanda-instruqt-day2-operator/blob/main/track_scripts/setup-server#L72) |
 | Redpanda chart | [link](https://gist.github.com/vuldin/31ab8a3fb0a1cd7f871fd846991fb6d0#file-operator-config-yaml-L7) |
 
-To verify the chart versions used within this environment:
+To verify the chart version used within this environment:
 
 ```bash,run
 helm list -n redpanda
@@ -176,9 +169,8 @@ helm list -n redpanda
 Output:
 
 ```bash,nocopy
-NAME                    NAMESPACE       REVISION        UPDATED                                 STATUS          CHART           APP VERSION
-redpanda                redpanda        1               2024-05-30 00:05:11.259705923 +0000 UTC deployed        redpanda-5.7.36 v23.3.10
-redpanda-controller     redpanda        1               2024-05-29 23:59:15.630077974 +0000 UTC deployed        operator-0.4.24 v2.1.20-24.1.2
+NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART           APP VERSION
+redpanda        redpanda        1               2025-03-18 18:30:16.682313837 +0000 UTC deployed        redpanda-5.7.36 v23.3.10
 ```
 
 The version of the two charts are shown in the "CHART" column.

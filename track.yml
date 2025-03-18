@@ -1,5 +1,5 @@
 slug: day2-helm
-id: 7sker6motqjc
+id: j1wqnuv2gpqw
 title: Day 2 operations with Redpanda helm chart
 teaser: Learn how to manage Redpanda after deploying with the Redpanda helm chart
 description: |-
@@ -9,8 +9,8 @@ description: |-
 icon: https://res.cloudinary.com/practicaldev/image/fetch/s--W2NpA-Jj--/c_fill,f_auto,fl_progressive,h_320,q_auto,w_320/https://dev-to-uploads.s3.amazonaws.com/uploads/organization/profile_image/5327/ea54f4c7-abf0-46fc-a971-766b484ab9bd.png
 tags:
 - day2ops
-- helm
 - k8s
+- helm
 owner: redpanda
 developers:
 - josh@redpanda.com
@@ -19,9 +19,11 @@ timelimit: 10200
 lab_config:
   extend_ttl: 300
   feedback_recap_enabled: true
+  feedback_tab_enabled: false
   loadingMessages: true
+  override_challenge_layout: false
   hideStopButton: false
   default_layout: AssignmentRight
   default_layout_sidebar_size: 33
-checksum: "14258644753744741774"
+checksum: "5823380417392447192"
 enhanced_loading: false

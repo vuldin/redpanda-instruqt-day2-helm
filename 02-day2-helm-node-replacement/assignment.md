@@ -1,6 +1,6 @@
 ---
-slug: day2-operator-node-replacement
-id: rj0u3ktsyutz
+slug: day2-helm-node-replacement
+id: qunglzxsqtxu
 type: challenge
 title: Replacing nodes and decommissioning Redpanda
 teaser: This section goes through the process for replacing Kubernetes nodes under
@@ -12,7 +12,7 @@ notes:
 
     ![skate.png](../assets/skate.png)
 tabs:
-- id: 156pxx5na22q
+- id: vmlg9bpfhsnu
   title: Shell
   type: terminal
   hostname: server
