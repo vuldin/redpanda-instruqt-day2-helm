@@ -65,38 +65,49 @@ When Redpanda was first deployed it contained a toleration and nodeSelector for 
 >
 > Because the recommended topic replica factor is 3. This means each partition within a topic must have three replicas or the cluster will go into unhealthy status. We will avoid making the cluster unhealthy by adding a temporary broker prior to decommissioning the three original brokers. Adding this temporary broker is unneeded if you have more brokers than your highest topic replica factor.
 
-## Update operator
+## Update chart values
 
-Modify the Redpanda resource with new tolerations, nodeSelector, and updateStrategy. One way to do this is by first creating a patch file:
+We need to modify the existing chart values with new tolerations, nodeSelector, and updateStrategy. If you use a CI/CD pipeline and your chart values is checked into a repo, then the best way to do this would be to update the code with the required changes and let your pipeline handle deploying the update. In our case we will take a more simple approach, which is to:
+
+1. Download the existing chart values
+2. Create a path file
+3. Apply the patch file to values.yaml
+4. Updates the deployment with helm
+
+First download the existing values:
+
+```bash,run
+curl -sLO https://gist.githubusercontent.com/vuldin/2000e53b22b7d0ef0c7ae69f70e581dc/raw/ffe9a14265087f32c802e03085525dbc82491dc4/values.yaml
+```
+
+Create a patch file with the required updates:
 
 ```bash,run
 cat <<EOF > patch.yaml
-spec:
-  clusterSpec:
-    tolerations:
-    - effect: NoSchedule
-      key: redpanda-pool2
-      operator: Equal
-      value: "true"
-    nodeSelector:
-      nodetype: redpanda-pool2
-    statefulset:
-      replicas: 4
-      updateStrategy:
-        type: OnDelete
+tolerations:
+- effect: NoSchedule
+  key: redpanda-pool2
+  operator: Equal
+  value: "true"
+nodeSelector:
+  nodetype: redpanda-pool2
+statefulset:
+  replicas: 4
+  updateStrategy:
+    type: OnDelete
 EOF
 ```
 
-Then applying the patch:
+Apply the patch to values.yaml:
 
 ```bash,run
-kubectl patch redpanda redpanda -n redpanda --type merge --patch-file patch.yaml
+yq '. *= load("patch.yaml")' values.yaml > updated-values-1.yaml
 ```
 
-Output:
+Update the deployment with helm:
 
-```bash,nocopy
-redpanda.cluster.redpanda.com/redpanda patched
+```bash,run
+helm upgrade --install redpanda redpanda --repo https://charts.redpanda.com -n redpanda --wait --timeout 2h --create-namespace --version 5.7.36 -f updated-values-1.yaml
 ```
 
 At this point a new broker is being spun up on one of the replacement worker nodes with the updated Kubernetes version:
@@ -154,13 +165,13 @@ Under-replicated partitions (0):  []
 The temporary broker needs to be added to the rpk profile in order to allow rpk to communicate with this broker. First create a file containing an updated version of the existing profile:
 
 ```bash,run
-rpk profile print | yq '.kafka_api.brokers += [ "redpanda-3.testdomain.local:31092" ],.admin_api.addresses += [ "redpanda-3.testdomain.local:31644" ]' > tmp-operator
+rpk profile print | yq '.kafka_api.brokers += [ "redpanda-3.testdomain.local:31092" ],.admin_api.addresses += [ "redpanda-3.testdomain.local:31644" ]' > tmp-redpanda-helm
 ```
 
 Then use this file to create a new temporary profile (for use only while this temporary broker exists):
 
 ```bash,run
-rpk profile create tmp-operator --from-profile tmp-operator
+rpk profile create tmp-redpanda-helm --from-profile tmp-redpanda-helm
 ```
 
 And since we are using `/etc/hosts` to provide DNS in this environment, we must update this file for the new broker:
@@ -360,7 +371,7 @@ ID    HOST                         PORT
 3*    redpanda-3.testdomain.local  31092
 ```
 
-Remove the temporary broker and update the Redpanda resource:
+Remove the temporary broker:
 
 ```bash,run
 rpk redpanda admin brokers decommission 3
@@ -370,25 +381,31 @@ rpk redpanda admin brokers decommission 3
 rpk redpanda admin brokers decommission-status 3
 ```
 
+Update the chart values, reverting back to the values we started this scenario with:
+
 ```bash,run
 cat <<EOF > patch.yaml
-spec:
-  clusterSpec:
-    statefulset:
-      replicas: 3
-      updateStrategy:
-        type: RollingUpdate
+statefulset:
+  replicas: 3
+  updateStrategy:
+    type: RollingUpdate
 EOF
 ```
 
 ```bash,run
-kubectl patch redpanda redpanda -n redpanda --type merge --patch-file patch.yaml
+yq '. *= load("patch.yaml")' updated-values-1.yaml > updated-values-2.yaml
 ```
 
-Switch away from the temporary rpk profile, back to the operator profile:
+Switch away from the temporary rpk profile back to the default profile:
 
 ```bash,run
-rpk profile use operator
+rpk profile use redpanda-helm
+```
+
+Apply the updated chart values to the cluster:
+
+```bash,run
+helm upgrade --install redpanda redpanda --repo https://charts.redpanda.com -n redpanda --wait --timeout 2h --create-namespace --version 5.7.36 -f updated-values-2.yaml
 ```
 
 Verify cluster health:

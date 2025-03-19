@@ -176,6 +176,27 @@ redpanda        redpanda        1               2025-03-18 18:30:16.682313837 +0
 The version of the chart is shown in the "CHART" column.
 
 > Note: The "APP VERSION" column lists a Redpanda version that may not coincide with the version deployed in your environment. This values is the latest Redpanda version that was available at the time of this helm chart's release.
+>
+> There are multiple ways to find the Redpanda version of your cluster, and perhaps the best way is:
+>
+> ```bash,run
+> rpk version
+> ```
+>
+> Output:
+>
+> ```bash,nocopy
+> Version:     v23.3.4
+> Git ref:     e562b3441c
+> Build date:  2024-01-26T00:44:04Z
+> OS/Arch:     linux/amd64
+> Go version:  go1.21.3
+>
+> Redpanda Cluster
+>   node-0  v23.3.4 - e562b3441cb6c1e7097d79184e471f47c40d478f
+>   node-1  v23.3.4 - e562b3441cb6c1e7097d79184e471f47c40d478f
+>   node-2  v23.3.4 - e562b3441cb6c1e7097d79184e471f47c40d478f
+> ```
 
 Security
 ===============

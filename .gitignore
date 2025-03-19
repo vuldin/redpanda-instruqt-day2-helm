@@ -1,3 +1,5 @@
 *.swp
+patch.yaml
 values.yaml
+updated-values.yaml
 
