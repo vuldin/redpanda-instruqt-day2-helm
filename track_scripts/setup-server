@@ -67,11 +67,7 @@ kubectl apply -f tls-external.yaml -n redpanda
 echo 'username:password:SCRAM-SHA-256' > superusers.txt
 kubectl create secret generic redpanda-superusers -n redpanda --from-file=superusers.txt
 
-# deploy operator
-#kubectl kustomize "https://github.com/redpanda-data/redpanda-operator/src/go/k8s/config/crd?ref=v2.1.14-23.3.4" | kubectl apply -f -
-#helm upgrade --install redpanda-controller operator --repo https://charts.redpanda.com -n redpanda --set image.tag=v2.1.14-23.3.4 --version 0.4.24
-#kubectl -n redpanda rollout status --watch deployment/redpanda-controller-operator
-
 # cleanup
 rm -rf certs private-ca-key tls-external.yaml rpk-linux-amd64.zip superusers.txt generate-certs.sh
 echo "setup complete"
+

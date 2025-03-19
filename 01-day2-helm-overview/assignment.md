@@ -135,11 +135,11 @@ Output:
 
 > Note: Most of our performance tests have been done on XFS up to this point, and we are in the process of expanding our performance tests to include ext4. Initial tests show similar performance across both filesystem types.
 
-## Operator
+## Helm chart
 
-The operator is responsible for deploying and configuring Redpanda. In production, the operator configuration will likely be checked into git and referenced within a CI/CD pipeline that provides infrastructure as code (IaC).
+The helm chart is responsible for deploying and configuring Redpanda. In production, the chart configuration will likely be checked into git and referenced within a CI/CD pipeline that provides infrastructure as code (IaC).
 
-Check the Statefulset status:
+Your Redpanda cluster has already been deployed in this environment. Each broker runs within a pod that is managed by a StatefulSet, and you can check the status:
 
 ```bash,run
 kubectl --namespace redpanda rollout status statefulset redpanda --watch
@@ -151,14 +151,14 @@ Output:
 statefulset rolling update complete 3 pods at revision redpanda-7d97f89b88...
 ```
 
-## Helm
+## Versions
 
 It is important to pin the versions of both the chart and Redpanda in order to ensure compatibility between these components over time. Below are the locations where each of these components are pinned in code:
 
 | Component name | link |
 | - | - |
-| Redpanda | [link](https://gist.github.com/vuldin/31ab8a3fb0a1cd7f871fd846991fb6d0#file-operator-config-yaml-L10) |
-| Redpanda chart | [link](https://gist.github.com/vuldin/31ab8a3fb0a1cd7f871fd846991fb6d0#file-operator-config-yaml-L7) |
+| Redpanda | [link](https://gist.github.com/vuldin/2000e53b22b7d0ef0c7ae69f70e581dc#file-values-yaml-L2) |
+| Redpanda chart | [link](https://github.com/vuldin/redpanda-instruqt-day2-helm/blob/main/01-day2-helm-overview/setup-server#L31) |
 
 To verify the chart version used within this environment:
 
@@ -173,20 +173,9 @@ NAME            NAMESPACE       REVISION        UPDATED                         
 redpanda        redpanda        1               2025-03-18 18:30:16.682313837 +0000 UTC deployed        redpanda-5.7.36 v23.3.10
 ```
 
-The version of the two charts are shown in the "CHART" column.
+The version of the chart is shown in the "CHART" column.
 
-You can also verify the state of the internal helm release that the operator uses to interface with the Redpanda deployment:
-
-```bash,run
-kubectl get helmrelease -n redpanda
-```
-
-Output should be similar to the following:
-
-```bash,nocopy
-NAME       AGE   READY   STATUS
-redpanda   24m   True    Helm install succeeded for release redpanda/redpanda.v1 with chart redpanda@5.7.36
-```
+> Note: The "APP VERSION" column lists a Redpanda version that may not coincide with the version deployed in your environment. This values is the latest Redpanda version that was available at the time of this helm chart's release.
 
 Security
 ===============
@@ -381,3 +370,4 @@ We provide Grafana dashboards in our [observability repo](https://github.com/red
 
 
 You have reached the end of the cluster overview assignment. Please click the 'Next' button below to continue.
+
