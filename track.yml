@@ -15,7 +15,7 @@ owner: redpanda
 developers:
 - josh@redpanda.com
 show_timer: true
-timelimit: 10200
+timelimit: 12600
 lab_config:
   extend_ttl: 300
   feedback_recap_enabled: true
@@ -25,5 +25,5 @@ lab_config:
   hideStopButton: false
   default_layout: AssignmentRight
   default_layout_sidebar_size: 33
-checksum: "4788911563184253968"
+checksum: "18235961129186682604"
 enhanced_loading: false
