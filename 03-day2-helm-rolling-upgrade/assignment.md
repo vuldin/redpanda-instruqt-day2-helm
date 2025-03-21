@@ -26,7 +26,7 @@ We provide a version matrix in order to make this process easier. More details c
 
 ## Discover new versions
 
-It is recommended to check the release notes for each version (found on the Github releases page linked below) to see if there are any significant changes that could impact your deployment. Also make sure to review the compatibility matrix to see which components have been tested with each other. More details can be found [here](https://docs.redpanda.com/current/upgrade/k-upgrade-operator/).
+It is recommended to check the release notes for each version (found on the Github releases page linked below) to see if there are any significant changes that could impact your deployment. Also make sure to review the compatibility matrix to see which components have been tested with each other (linked above).
 
 First let's determine which versions to use during the upgrade for each component. Run the following commands to get the latest versions:
 
@@ -42,14 +42,14 @@ Redpanda chart (from [Github releases page](https://github.com/redpanda-data/hel
 curl -s https://api.github.com/repos/redpanda-data/helm-charts/releases | jq -r '.[].name' | grep redpanda | head -1 | tr "-" "\n" | tail -1
 ```
 
-The target versions for this upgrade process are the following:
+This upgrade will focused on the following target versions:
 
 | Component | Version |
 |-|-|
 | Redpanda | 24.2.7 |
 | Redpanda chart | 5.9.9 |
 
-> Note: The version used above are likely different than the latest, but we are pinning to specific version to ensure future users don't run into any unforseen issues. In your environment you will likely want to target upgrading to the latest available version
+> Note: The version used above are likely different than the latest, but we are pinning to specific version to ensure future users don't run into any unforseen issues. In your environment you will likely want to target upgrading to the latest available version.
 
 Since we are currently on Redpanda 23.3.4, we will proceed with the upgrade order above, upgrading each component and finishing with upgrading Redpanda itself. But we will upgrade Redpanda two times: first to the latest 24.1 (24.1.17 at this time) and last to the latest 24.2 (24.2.7 at this time).
 

@@ -20,7 +20,7 @@ difficulty: ""
 timelimit: 600
 enhanced_loading: null
 ---
-This scenario focuses on replacing Kubernetes nodes under a running Redpanda cluster. This process involves configuring taints/tolerations on the replacement nodes, updating the operator and StatefulSet, setting up an additional broker to ensure replica factor is maintained throughout the process, and then deleting/decommissioning the original pods while managing the PersistentVolumes.
+This scenario focuses on replacing Kubernetes nodes under a running Redpanda cluster. This process involves configuring taints/tolerations on the replacement nodes, updating the StatefulSet, setting up an additional broker to ensure replica factor is maintained throughout the process, and then deleting/decommissioning the original pods while managing the PersistentVolumes.
 
 Changing the broker count should involve a number of considerations:
 
@@ -285,7 +285,7 @@ ID    HOST                         PORT
 3     redpanda-3.testdomain.local  31092
 ```
 
-At this point we have updated the operator and StatefulSet to increase the broker count to 4 and ensure new brokers get assigned to the replacement Kubernetes nodes. Doing this has automatically brought up a temporary 4th broker (redpanda-3, node 3). We have also decommissioned the first of the original brokers (redpanda-2, node 2) and deleted the related cluster resources. The StatefulSet then created a new broker (redpanda-2, node 4) but with the same hostname as the previously decommissioned broker (redpanda-2, node 2). This is important since clients may only know of the original hostnames. If we only deleted the pods without first decommissioning the associated broker, then the StatefulSet would have created redpanda-4, node 4.
+At this point we have updated the StatefulSet to increase the broker count to 4 and ensure new brokers get assigned to the replacement Kubernetes nodes. Doing this has automatically brought up a temporary 4th broker (redpanda-3, node 3). We have also decommissioned the first of the original brokers (redpanda-2, node 2) and deleted the related cluster resources. The StatefulSet then created a new broker (redpanda-2, node 4) but with the same hostname as the previously decommissioned broker (redpanda-2, node 2). This is important since clients may only know of the original hostnames. If we only deleted the pods without first decommissioning the associated broker, then the StatefulSet would have created redpanda-4, node 4.
 
 We will repeat the same steps for the remaining two original brokers. Continue with node 1:
 

@@ -42,7 +42,7 @@ difficulty: ""
 timelimit: 600
 enhanced_loading: null
 ---
-There are two ways to deploy Redpanda in Kubernetes: the operator and the helm chart. This track focused on operator-based deployments. One thing to keep in mind is that the operator actually uses the helm chart under the covers to perform some basic management tasks for Redpanda (so the two deployment methods are more similar than you may think). For detailed information about running Redpanda in Kubernetes, see the [Redpanda documentation](https://docs.redpanda.com/docs/deploy/deployment-option/self-hosted/kubernetes).
+There are two ways to deploy Redpanda in Kubernetes: the operator and the helm chart. This track focuses on helm-based deployments. For detailed information about running Redpanda in Kubernetes, see the [Redpanda documentation](https://docs.redpanda.com/docs/deploy/deployment-option/self-hosted/kubernetes).
 
 This assignment (or challenge if you are familiar with Instruqt) is here to explain how this environment was configured and deployed. There are no required commands; instead you will be given commands to run that will verify the cluster and peripheral environment is in working order.
 
@@ -52,7 +52,7 @@ Tools
 ===============
 
 The following tools are already installed in your environment:
-- `helm`: helps you define, install, and upgrade applications running on Kubernetes. Helm is used to deploy the the Redpanda operator.
+- `helm`: helps you define, install, and upgrade applications running on Kubernetes. Helm is used to deploy Redpanda.
 - `kubectl`: lets you deploy applications, inspect and manage cluster resources, and view logs in Kubernetes cluster.
 - `rpk`: lets you manage your entire Redpanda cluster without the need to run a separate script for each function, as with Apache Kafka. The `rpk` commands handle everything from configuring nodes and kernel tuning to acting as a client to produce and consume data.
 - `yq`: a lightweight and portable command-line YAML processor written in Go
@@ -228,7 +228,7 @@ External access
 
 ## LoadBalancer
 
-The operator can be configured to create two different services for external access: NodePort and LoadBalancer. This deployment makes use of the LoadBalancer option, which deploys a LoadBalancer per broker. More details on this configuration are in [our docs](https://docs.redpanda.com/current/manage/kubernetes/networking/external/k-loadbalancer/?tab=tabs-1-helm-operator).
+Redpanda can be configured to create either of the following two services for external access: NodePort and LoadBalancer. This deployment makes use of the LoadBalancer option, which deploys a LoadBalancer per broker. More details on this configuration are in [our docs](https://docs.redpanda.com/current/manage/kubernetes/networking/external/k-loadbalancer/?tab=tabs-1-helm-operator).
 
 Get details on the LoadBalancer services:
 
@@ -279,7 +279,7 @@ There are two tuning steps to take on the worker nodes Redpanda is assigned to:
 Redpanda
 ===============
 
-> Note: This environment was deployed and configured by running a set of scripts, which can be found in [this repo](https://github.com/vuldin/redpanda-instruqt-day2-operator).
+> Note: This environment was deployed and configured by running a set of scripts, which can be found in [this repo](https://github.com/vuldin/redpanda-instruqt-day2-helm).
 
 The Redpanda cluster in this environment has three brokers. You can verify the broker count, connectivity, as well as view some other basic information related to the cluster with the following command:
 
@@ -302,7 +302,7 @@ ID    HOST                         PORT
 2     redpanda-2.testdomain.local  31092
 ```
 
-This Redpanda cluster is deployed via the operator and configured out-of-the box in a number of ways that make it possible to run the above command successfully, which is basically a Kafka client making an external connection to Redpanda within the Kubernetes cluster.
+This Redpanda cluster is deployed via the helm chart and configured out-of-the box in a number of ways that make it possible to run the above command successfully, which is basically a Kafka client making an external connection to Redpanda within the Kubernetes cluster.
 
 ## rpk
 
@@ -317,7 +317,7 @@ rpk profile print
 Output:
 
 ```bash,nocopy
-name: operator
+name: redpanda-helm
 kafka_api:
     brokers:
         - redpanda-0.testdomain.local:31092
@@ -338,7 +338,7 @@ admin_api:
         ca_file: ca.crt
 ```
 
-The configuration for connecting to this cluster is stored in the "operator" profile shown above. You can create multiple profiles within rpk, and switch between them to connect to various clusters. More details on rpk profiles [here](https://docs.redpanda.com/current/reference/rpk/rpk-profile/rpk-profile/).
+The configuration for connecting to this cluster is stored in the "redpanda-helm" profile shown above. You can create multiple profiles within rpk, and switch between them to connect to various clusters. More details on rpk profiles [here](https://docs.redpanda.com/current/reference/rpk/rpk-profile/rpk-profile/).
 
 Monitoring
 ===============
